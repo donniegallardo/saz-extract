@@ -14,12 +14,12 @@ zipEntries
 	.map(pathAndEncodeSearch)
 	.map(newfilename)
 	.forEach(function(e) {
-	 	extractEntry(e.req).then(
-	 		renameExtractedEntry(e.req, e.newreq).then(resolveMessage)
+	 	extract(e.req).then(
+	 		rename(e.req, e.newreq).then(resolveMessage)
 	 		.catch(rejectionMessage)
 	 	);
-	 	extractEntry(e.resp).then(
-	 		renameExtractedEntry(e.resp, e.newresp).then(resolveMessage)
+	 	extract(e.resp).then(
+	 		rename(e.resp, e.newresp).then(resolveMessage)
 	 		.catch(rejectionMessage)
 	 	)
 	})
@@ -32,7 +32,7 @@ function rejectionMessage(reason){
 	console.log(reason);
 }
 
-function renameExtractedEntry(entry, newfilename){
+function rename(entry, newfilename){
 	return new Promise(function(resolve, reject){
 		fs.rename(entry, newfilename, (err) => {
 		  if (err) throw err;
@@ -41,7 +41,7 @@ function renameExtractedEntry(entry, newfilename){
 	});
 }
 
-function extractEntry(entry){
+function extract(entry){
 	return new Promise(function(resolve, reject){
 		zip.extractEntryTo(
 	 		/*entry name*/entry, 
