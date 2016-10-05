@@ -12,16 +12,19 @@ zipEntries
 	.map(pathonlyencoded)
 	.forEach(function(zipEntry) {
 	 	console.log(zipEntry);
+	 	//rename files
+	 	//save
 	})
 
 function pathonlyencoded(zipEntry){
-	zipEntry.path = encodeURIComponent(url.parse(zipEntry.endpoint || "").path);
+	var urlObj = url.parse(zipEntry.endpoint || "");
+	zipEntry.path = urlObj.path.replace(/\//g, ">") + (urlObj.search ? encodeURIComponent(urlObj.search) : "");
 	return zipEntry;
 }
 
 function endpoint(zipEntry){
-	zipEntry.endpoint = zip.readAsText(zipEntry.req).split('\n')[0].split(" ")["1"] || "";
-	return zipEntry;//(url.parse(strUrl));
+	zipEntry.endpoint = zip.readAsText(zipEntry.req).split('\n')[0].split(" ")[1] || "";
+	return zipEntry;
 }
 
 function request(zipEntry){
