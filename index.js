@@ -1,5 +1,6 @@
 var AdmZip = require('adm-zip');
 var url = require("url");
+var fs = require("fs");
 
 // read saz archive
 var zip = new AdmZip("sniff.saz");
@@ -7,33 +8,84 @@ var zipEntries = zip.getEntries();
 
 zipEntries
 	.filter(request)
+	//.filter( e => /_c.txt$/.test(e.entryName) ) //sample arrow function
 	.map(response)
 	.map(endpoint)
-	.map(pathonlyencoded)
-	.forEach(function(zipEntry) {
-	 	console.log(zipEntry);
-	 	//rename files
-	 	//save
+	.map(pathAndEncodeSearch)
+	.map(newfilename)
+	.forEach(function(e) {
+	 	extractEntry(e.req).then(
+	 		renameExtractedEntry(e.req, e.newreq).then(resolveMessage)
+	 		.catch(rejectionMessage)
+	 	);
+	 	extractEntry(e.resp).then(
+	 		renameExtractedEntry(e.resp, e.newresp).then(resolveMessage)
+	 		.catch(rejectionMessage)
+	 	)
 	})
 
-function pathonlyencoded(zipEntry){
-	var urlObj = url.parse(zipEntry.endpoint || "");
-	zipEntry.path = urlObj.path.replace(/\//g, ">") + (urlObj.search ? encodeURIComponent(urlObj.search) : "");
-	return zipEntry;
+function resolveMessage(response){
+	console.log(response);
 }
 
-function endpoint(zipEntry){
-	zipEntry.endpoint = zip.readAsText(zipEntry.req).split('\n')[0].split(" ")[1] || "";
-	return zipEntry;
+function rejectionMessage(reason){
+	console.log(reason);
 }
 
-function request(zipEntry){
-	return /_c[.]txt$/.test(zipEntry.entryName);
+function renameExtractedEntry(entry, newfilename){
+	return new Promise(function(resolve, reject){
+		fs.rename(entry, newfilename, (err) => {
+		  if (err) throw err;
+		  else resolve(entry + " renamed to " + newfilename);
+		})
+	});
 }
 
-function response(zipEntry){
+function extractEntry(entry){
+	return new Promise(function(resolve, reject){
+		zip.extractEntryTo(
+	 		/*entry name*/entry, 
+	 		/*target path*/".", 
+	 		/*maintainEntryPath*/true, 
+	 		/*overwrite*/true)
+		? resolve("extracted")
+		: ""/*reject("failed extraction")*/;
+	});
+}
+
+function newfilename(e){
+	//regex pattern would do
+	//for brevity we just remove known patterns
+	e.newreq = e.req.replace(/_c/, "_request"+e.path);
+	e.newresp = e.resp.replace(/_s/, "_response"+e.path);
+	return e;
+}
+
+function pathAndEncodeSearch(e){
+	var urlObj = url.parse(e.endpoint || "");
+	e.path = urlObj.pathname.replace(/\//g, "_") + (urlObj.search ? encodeURIComponent(urlObj.search) : "");
+	return e;
+}
+
+function endpoint(e){
+	e.endpoint = zip.readAsText(e.req).split('\n')[0].split(" ")[1] || "";
+	return e;
+}
+
+function response(e, i, a){
 	return {
-		req: zipEntry.entryName,
-		resp: zipEntry.entryName.replace(/_c[.]txt/, "_s.txt")
+		req: e.entryName,
+		resp: e.entryName.replace(/_c.txt/, "_s.txt")
 	};
+}
+
+/*
+element
+	The current element being processed in the array.
+index
+	The index of the current element being processed in the array.
+array
+	The array filter was called upon.*/
+function request(e, i, a){
+	return /_c[.]txt$/.test(e.entryName);
 }
