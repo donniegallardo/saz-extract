@@ -1,0 +1,34 @@
+{
+  "name": "saz-extract",
+  "version": "0.0.1",
+  "description": "saz extractor",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/donniegallardo/saz-extract.git"
+  },
+  "keywords": [
+    "saz",
+    "extract",
+    "request",
+    "headers",
+    "response",
+    "headers",
+    "extractor"
+  ],
+  "author": "Donnie Gallardo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/donniegallardo/saz-extract/issues"
+  },
+  "homepage": "https://github.com/donniegallardo/saz-extract#readme",
+  "dependencies": {
+    "adm-zip": "^0.4.7",
+    "grepr": "^2.1.0",
+    "node-dom": "^0.1.0",
+    "unzip": "^0.1.11"
+  }
+}
