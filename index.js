@@ -1,9 +1,8 @@
-var AdmZip = require('adm-zip');
 var url = require("url");
 var fs = require("fs");
 
 // read saz archive
-var zip = new AdmZip("sniff.saz");
+var zip = new require('adm-zip')("sniff.saz");
 var zipEntries = zip.getEntries();
 
 zipEntries
