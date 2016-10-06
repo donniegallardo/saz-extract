@@ -18,8 +18,8 @@ const saz = new require('adm-zip')('sniff.saz');
 const [regexreq, regexresp] = [/_c[.]txt$/, /_s[.]txt$/];
 
 saz.getEntries()
-    //.filter(requestOrResponse)
-    .filter((e) => regexreq.test(e.entryName) || regexresp.test(e.entryName)) // sample arrow function
+    //.filter((e) => regexreq.test(e.entryName) || regexresp.test(e.entryName)) // sample arrow function
+    .filter(requestOrResponse)
     .map(endpoint) //preamable
     .map(pathAndEncodeSearch) //encode it
     .map(newfilename) //structure a new filename
