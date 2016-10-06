@@ -8,7 +8,7 @@ const url = require('url');
 const fs = require('fs');
 
 // read saz archive
-const saz = new require('adm-zip')('sniff.saz');
+const saz = new require('adm-zip')('Sample.saz');
 
 // good
 // const regexreq = /_c[.]txt$/;
@@ -21,7 +21,7 @@ saz.getEntries()
     //.filter(requestOrResponse)
     .filter((e) => regexreq.test(e.entryName) || regexresp.test(e.entryName)) // sample arrow function
     .map(endpoint) //preamable
-    .map(pathAndEncodeSearch) //encode it
+    .map(encodepath) //encode url path
     .map(newfilename) //structure a new filename
     .forEach(extractAndRename) //extract then rename it
 
@@ -33,20 +33,20 @@ Inside a SAZ file, you will find:
 
 Inside the Raw folder, there will be three or four files for each web session.
     sessid#_c.txt - contains the raw client request.
-    sessid#_s.txt - contains the raw server request.
+    sessid#_s.txt - contains the raw server responses.
     sessid#_m.xml - contains metadata including session flags, socket reuse information, etc.
     sessid#_w.txt - (optional) contains WebSocket messages.
 */
 
 function extractAndRename(e) {
     //extract filtered and map entries
-    //console.log(e);
-    extract(e.entryName)
-        .then(
-            rename(e.entryName, e.newEntryName).then(resolveMessage)
-            .catch(rejectionMessage)
-        )
-        .catch(rejectionMessage);
+    console.log(e);
+    // extract(e.entryName)
+    //     .then(
+    //         rename(e.entryName, e.newEntryName).then(resolveMessage)
+    //         .catch(rejectionMessage)
+    //     )
+    //     .catch(rejectionMessage);
 
     function extract(entry) {
         return new Promise(function(resolve, reject) {
@@ -90,26 +90,18 @@ function newfilename(e) {
     }
 
     function createReqFileName() {
-        return e.entryName.replace(/_c/, `_req${e.path}`);
+        return e.entryName.replace(/_c/, `_req${e.path}`).substring(0, 254);
     }
 
     function createRespFileName() {
-        return e.entryName.replace(/_s/, `_resp${e.path}`);
+        return e.entryName.replace(/_s/, `_resp${e.path}`).substring(0, 254);
     }
 }
 
-function pathAndEncodeSearch(e) {
+function encodepath(e) {
     const urlObj = url.parse(e.endpoint || '');
-    e.path = urlObj.pathname && `${replaceFwdSlashWithUnderscore()}${encodeSearch()}`;
+    e.path = encodeURIComponent((urlObj.path && urlObj.path !== null) ? urlObj.path : e.endpoint);
     return e;
-
-    function replaceFwdSlashWithUnderscore() {
-        return urlObj.pathname.replace(/\//g, '_');
-    }
-
-    function encodeSearch() {
-        return (urlObj.search ? encodeURIComponent(urlObj.search) : '');
-    }
 }
 
 function endpoint(e) {
