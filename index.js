@@ -14,10 +14,12 @@ zipEntries
 	.map(pathAndEncodeSearch)
 	.map(newfilename)
 	.forEach(function(e) {
+		//extract request
 	 	extract(e.req).then(
 	 		rename(e.req, e.newreq).then(resolveMessage)
 	 		.catch(rejectionMessage)
 	 	);
+	 	//extract response
 	 	extract(e.resp).then(
 	 		rename(e.resp, e.newresp).then(resolveMessage)
 	 		.catch(rejectionMessage)

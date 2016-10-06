@@ -7,24 +7,20 @@ var zip = new AdmZip("sniff.saz");
 var zipEntries = zip.getEntries();
 
 zipEntries
-	.filter(requestAndResponse)
+	.filter(requestOrResponse)
 	.map(endpoint) //preamable
 	.map(pathAndEncodeSearch) //encode it
 	.map(newfilename) //structure a new filename
 	.forEach(function(e) {
-	 	extract(e.entryName).then(
-	 		rename(e.entryName, e.newEntryName).then(resolveMessage)
-	 		.catch(rejectionMessage)
-	 	);
+		//extract filtered and map entries
+	 	extract(e.entryName)
+	 		.then(
+		 		rename(e.entryName, e.newEntryName).
+		 			then(resolveMessage)
+		 		.catch(rejectionMessage)
+	 	)
+	 	.catch(rejectionMessage);
 	})
-
-function resolveMessage(response){
-	console.log(response);
-}
-
-function rejectionMessage(reason){
-	console.log(reason);
-}
 
 function rename(entry, newfilename){
 	return new Promise(function(resolve, reject){
@@ -43,7 +39,7 @@ function extract(entry){
 	 		/*maintainEntryPath*/true, 
 	 		/*overwrite*/true)
 		? resolve("extracted")
-		: ""/*reject("failed extraction")*/;
+		: reject("failed extraction");
 	});
 }
 
@@ -73,13 +69,6 @@ function endpoint(e){
 	};
 }
 
-/*
-element
-	The current element being processed in the array.
-index
-	The index of the current element being processed in the array.
-array
-	The array filter was called upon.*/
 function request(e, i, a){
 	return /_c[.]txt$/.test(e.entryName);
 }
@@ -88,6 +77,14 @@ function response(e, i, a){
 	return /_s[.]txt$/.test(e.entryName);
 }
 
-function requestAndResponse(e, i, a){
+function requestOrResponse(e, i, a){
 	return request(e, i, a) || response(e, i, a);
+}
+
+function resolveMessage(response){
+	console.log(response);
+}
+
+function rejectionMessage(reason){
+	console.log(reason);
 }
