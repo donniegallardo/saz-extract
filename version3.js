@@ -1,3 +1,9 @@
+// Support for ES6 modules first needs to land in V8. 
+// The tracking bug is <https://bugs.chromium.org/p/v8/issues/detail?id=1569>
+// but it's blocked by finalization of the module loader spec.
+// import * as url from 'url';
+// import * as fs from 'fs';
+
 const url = require('url');
 const fs = require('fs');
 
@@ -8,7 +14,7 @@ const saz = new require('adm-zip')('sniff.saz');
 // const regexreq = /_c[.]txt$/;
 // const regexresp = /_s[.]txt$/;
 
-// best. but depends on some cases. this case not easily readable for me.
+// better/best. but depends on some cases. this case not easily readable for me.
 const [regexreq, regexresp] = [/_c[.]txt$/, /_s[.]txt$/];
 
 saz.getEntries()
