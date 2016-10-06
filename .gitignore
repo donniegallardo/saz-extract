@@ -1,6 +1,7 @@
 node_modules/
 dummies/
 raw/
+.eslintrc.js
 .vscode/
 sniff.saz
 

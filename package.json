@@ -27,6 +27,7 @@
   "homepage": "https://github.com/donniegallardo/saz-extract#readme",
   "dependencies": {
     "adm-zip": "^0.4.7",
+    "eslint": "^3.7.1",
     "grepr": "^2.1.0",
     "node-dom": "^0.1.0",
     "unzip": "^0.1.11"
