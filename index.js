@@ -40,13 +40,13 @@ Inside the Raw folder, there will be three or four files for each web session.
 
 function extractAndRename(e) {
     //extract filtered and map entries
-    console.log(e);
-    // extract(e.entryName)
-    //     .then(
-    //         rename(e.entryName, e.newEntryName).then(resolveMessage)
-    //         .catch(rejectionMessage)
-    //     )
-    //     .catch(rejectionMessage);
+    //console.log(e);
+    extract(e.entryName)
+        .then(
+            rename(e.entryName, e.newEntryName).then(resolveMessage)
+            .catch(rejectionMessage)
+        )
+        .catch(rejectionMessage);
 
     function extract(entry) {
         return new Promise(function(resolve, reject) {
