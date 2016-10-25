@@ -1,3 +1,25 @@
+#!/usr/bin/env node
+
+const program = require('commander');
+const colors = require('colors');
+
+function make_red(txt) {
+  return colors.red(txt); //display the help text in red on the console
+}
+
+program
+  .usage('Sample.saz tmp/output')
+  .parse(process.argv);
+
+const argslength = program.args.length;
+if (argslength < 2 || argslength > 2) {
+    program.outputHelp(make_red);
+    process.exit();
+}
+
+const sazfile = program.args[0];
+const outputdir = program.args[1];
+
 // Support for ES6 modules first needs to land in V8. 
 // The tracking bug is <https://bugs.chromium.org/p/v8/issues/detail?id=1569>
 // but it's blocked by finalization of the module loader spec.

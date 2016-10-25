@@ -6,6 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "bin": {
+    "saz-extract": "index.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/donniegallardo/saz-extract.git"
@@ -17,7 +20,8 @@
     "headers",
     "response",
     "headers",
-    "extractor"
+    "extractor",
+    "fiddler"
   ],
   "author": "Donnie Gallardo",
   "license": "ISC",
@@ -27,6 +31,7 @@
   "homepage": "https://github.com/donniegallardo/saz-extract#readme",
   "dependencies": {
     "adm-zip": "^0.4.7",
+    "colors": "^1.1.2",
     "commander": "^2.9.0",
     "eslint": "^3.7.1",
     "grepr": "^2.1.0",
